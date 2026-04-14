@@ -1,0 +1,32 @@
+body {
+    font-family: Arial, sans-serif;
+    background: #121212;
+    color: white;
+    text-align: center;
+}
+
+.container {
+    margin-top: 50px;
+}
+
+button {
+    display: block;
+    margin: 10px auto;
+    padding: 10px;
+    width: 200px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.correct {
+    background-color: green;
+}
+
+.wrong {
+    background-color: red;
+}
+
+.hidden {
+    display: none;
+}
