@@ -1,47 +1,47 @@
 const questions = [
     {
-        question: "O que é JSP?",
+        question: "Qual é o papel do Container Web (como o Tomcat) em relação ao JSP?",
         answers: [
-            { text: "Executado no navegador", correct: false },
-            { text: "Transformado em Servlet no servidor", correct: true },
-            { text: "É HTML puro", correct: false },
-            { text: "Executado no banco de dados", correct: false }
+            { text: "Renderizar o código Java diretamente no navegador.", correct: false },
+            { text: "Traduzir o JSP em um Servlet, compilar e executar no servidor.", correct: true },
+            { text: "Apenas armazenar arquivos estáticos de HTML.", correct: false },
+            { text: "Converter o banco de dados em páginas CSS.", correct: false }
         ]
     },
     {
-        question: "Qual porta padrão do HTTP?",
+        question: "Sobre o 'sendRedirect', é correto afirmar que:",
         answers: [
-            { text: "443", correct: false },
-            { text: "8080", correct: false },
-            { text: "80", correct: true },
-            { text: "21", correct: false }
+            { text: "Ele ocorre inteiramente dentro do servidor.", correct: false },
+            { text: "Mantém os atributos do objeto 'request'.", correct: false },
+            { text: "Solicita ao navegador que faça uma nova requisição para outra URL.", correct: true },
+            { text: "É mais rápido que o 'forward'.", correct: false }
         ]
     },
     {
-        question: "Diferença entre sendRedirect e forward:",
+        question: "Qual objeto implícito é usado para compartilhar dados entre todos os usuários da aplicação?",
         answers: [
-            { text: "sendRedirect mantém request", correct: false },
-            { text: "forward faz nova requisição", correct: false },
-            { text: "sendRedirect perde dados e muda URL", correct: true },
-            { text: "forward muda URL", correct: false }
-        ]
-    },
-    {
-        question: "Qual objeto implícito representa a requisição?",
-        answers: [
-            { text: "response", correct: false },
-            { text: "request", correct: true },
-            { text: "out", correct: false },
-            { text: "session", correct: false }
-        ]
-    },
-    {
-        question: "Qual objeto é usado para redirecionar?",
-        answers: [
-            { text: "request", correct: false },
-            { text: "response", correct: true },
             { text: "session", correct: false },
-            { text: "out", correct: false }
+            { text: "pageContext", correct: false },
+            { text: "application", correct: true },
+            { text: "request", correct: false }
+        ]
+    },
+    {
+        question: "No ciclo de vida de um Servlet, qual método é executado para cada nova requisição do cliente?",
+        answers: [
+            { text: "init()", correct: false },
+            { text: "service()", correct: true },
+            { text: "destroy()", correct: false },
+            { text: "main()", correct: false }
+        ]
+    },
+    {
+        question: "Como você recupera um valor enviado por um campo de texto chamado 'usuario' em um Servlet?",
+        answers: [
+            { text: "request.getAttribute('usuario')", correct: false },
+            { text: "response.getParameter('usuario')", correct: false },
+            { text: "request.getParameter('usuario')", correct: true },
+            { text: "session.read('usuario')", correct: false }
         ]
     }
 ];
@@ -52,6 +52,8 @@ let score = 0;
 const questionEl = document.getElementById("question");
 const answersEl = document.getElementById("answers");
 const nextBtn = document.getElementById("nextBtn");
+const quizDiv = document.getElementById("quiz");
+const resultDiv = document.getElementById("result-container");
 const scoreEl = document.getElementById("score");
 
 function showQuestion() {
@@ -68,6 +70,7 @@ function showQuestion() {
 }
 
 function resetState() {
+    nextBtn.classList.add("hidden");
     answersEl.innerHTML = "";
 }
 
@@ -81,7 +84,12 @@ function selectAnswer(button, correct) {
 
     Array.from(answersEl.children).forEach(btn => {
         btn.disabled = true;
+        // Destaca a resposta correta se o usuário errar
+        const ans = questions[currentQuestion].answers.find(a => a.text === btn.innerText);
+        if (ans.correct) btn.classList.add("correct");
     });
+
+    nextBtn.classList.remove("hidden");
 }
 
 nextBtn.onclick = () => {
@@ -94,9 +102,9 @@ nextBtn.onclick = () => {
 };
 
 function showScore() {
-    document.getElementById("quiz").classList.add("hidden");
-    scoreEl.classList.remove("hidden");
-    scoreEl.innerText = "Você acertou " + score + " de " + questions.length;
+    quizDiv.classList.add("hidden");
+    resultDiv.classList.remove("hidden");
+    scoreEl.innerText = `Você acertou ${score} de ${questions.length}!`;
 }
 
 showQuestion();
