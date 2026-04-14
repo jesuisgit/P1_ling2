@@ -2,19 +2,29 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Quiz LP2</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz LP2 - Preparatório</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <div class="container">
-    <h1>Quiz - LP2</h1>
-    <div id="quiz">
-        <h2 id="question">Pergunta aqui</h2>
-        <div id="answers"></div>
-        <button id="nextBtn">Próxima</button>
+    <header>
+        <h1>Quiz LP2</h1>
+        <p>Desenvolvimento Web Java & Servlets</p>
+    </header>
+
+    <div id="quiz-box">
+        <div id="quiz">
+            <h2 id="question">Carregando pergunta...</h2>
+            <div id="answers" class="answer-stack"></div>
+            <button id="nextBtn" class="hidden">Próxima Pergunta</button>
+        </div>
+        <div id="result-container" class="hidden">
+            <h2 id="score"></h2>
+            <button onclick="location.reload()" class="retry-btn">Tentar Novamente</button>
+        </div>
     </div>
-    <h2 id="score" class="hidden"></h2>
 </div>
 
 <script src="script.js"></script>
