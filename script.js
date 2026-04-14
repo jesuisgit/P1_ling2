@@ -1,39 +1,145 @@
 const questions = [
-    // --- AULA 1 & 2: PROTOCOLO HTTP & INTRODUÇÃO ---
     {
-        question: "Qual método HTTP envia dados no corpo da requisição, sendo mais seguro para informações sensíveis?",
+        question: "Para inserir código Java em uma página JSP que será executado no servidor, quais caracteres devem ser utilizados para abrir e fechar a marcação?",
         answers: [
-            { text: "GET", correct: false },
-            { text: "POST", correct: true },
-            { text: "PUT", correct: false },
-            { text: "DELETE", correct: false }
+            { text: "<%  %>", correct: true, explanation: "Estes são os delimitadores de Scriptlets. O código entre eles é executado no servidor antes de enviar o HTML ao cliente." },
+            { text: "<?  ?>", correct: false, explanation: "Essa marcação é utilizada em PHP, não em JSP/Java." },
+            { text: "<script> </script>", correct: false, explanation: "Tags <script> são para JavaScript, que executa no navegador (lado do cliente)." },
+            { text: "<%+  +%>", correct: false, explanation: "O caractere correto é apenas a porcentagem (%)." }
         ]
     },
     {
-        question: "O que caracteriza uma requisição HTTP do tipo GET?",
+        question: "Qual a principal diferença entre o método GET e o POST no protocolo HTTP?",
         answers: [
-            { text: "Os parâmetros são enviados no corpo da mensagem.", correct: false },
-            { text: "Os parâmetros são anexados diretamente na URL.", correct: true },
-            { text: "É usada para enviar arquivos grandes ao servidor.", correct: false },
-            { text: "Não possui limite de tamanho para os dados enviados.", correct: false }
-        ]
-    },
-    // --- AULA 3 & 4: SERVLETS & CICLO DE VIDA ---
-    {
-        question: "Qual o nome do arquivo XML utilizado para configurar o mapeamento de Servlets na aplicação?",
-        answers: [
-            { text: "server.xml", correct: false },
-            { text: "config.xml", correct: false },
-            { text: "web.xml", correct: true },
-            { text: "index.xml", correct: false }
+            { text: "GET envia dados na URL; POST envia no corpo da requisição.", correct: true, explanation: "O GET anexa parâmetros à URL (visível), enquanto o POST os oculta no corpo da mensagem." },
+            { text: "POST é usado apenas para buscar dados.", correct: false, explanation: "GET é para busca (idempotente), POST é para envio/alteração." },
+            { text: "GET é mais seguro que o POST.", correct: false, explanation: "O POST é mais seguro pois não expõe os dados na barra de endereço." }
         ]
     },
     {
-        question: "No ciclo de vida de um Servlet, qual método é executado apenas uma vez no carregamento inicial?",
+        question: "Sobre o ciclo de vida de um Servlet, qual a função do método init()?",
         answers: [
-            { text: "service()", correct: false },
-            { text: "doGet()", correct: false },
-            { text: "init()", correct: true },
+            { text: "Executar toda vez que a página sofre um refresh.", correct: false, explanation: "O método que executa a cada requisição é o service()." },
+            { text: "Carregar configurações iniciais apenas uma vez.", correct: true, explanation: "O init() é chamado pelo container apenas no início do ciclo de vida para inicialização." },
+            { text: "Destruir os objetos da memória.", correct: false, explanation: "Essa é a função do método destroy()." }
+        ]
+    },
+    {
+        question: "Ao utilizar 'response.sendRedirect()', o que acontece com a URL no navegador?",
+        answers: [
+            { text: "A URL permanece a mesma.", correct: false, explanation: "Isso acontece no 'forward', não no 'sendRedirect'." },
+            { text: "A URL muda para o novo endereço solicitado.", correct: true, explanation: "O sendRedirect instrui o navegador a fazer uma nova requisição, atualizando o endereço." },
+            { text: "A página é fechada automaticamente.", correct: false, explanation: "O método apenas redireciona o fluxo para outra página." }
+        ]
+    },
+    {
+        question: "Qual objeto implícito do JSP é utilizado para capturar informações enviadas por um formulário HTML?",
+        answers: [
+            { text: "out", correct: false, explanation: "O 'out' serve para escrever dados na página (saída)." },
+            { text: "response", correct: false, explanation: "O 'response' é para enviar dados de volta ao cliente." },
+            { text: "request", correct: true, explanation: "O objeto 'request' encapsula todos os dados vindos da requisição do cliente." }
+        ]
+    },
+    {
+        question: "O que é o Apache Tomcat no contexto de Java Web?",
+        answers: [
+            { text: "Um banco de dados relacional.", correct: false, explanation: "O Tomcat não armazena dados persistentes como um banco." },
+            { text: "Um Container Web ou Servidor de Aplicações.", correct: true, explanation: "Ele fornece o ambiente necessário para executar Servlets e JSPs." },
+            { text: "Um editor de texto para programadores.", correct: false, explanation: "O Tomcat é um software de servidor, não uma ferramenta de edição." }
+        ]
+    },
+    {
+        question: "Para declarar uma variável global no JSP que pode ser usada em toda a classe do Servlet gerado, qual tag usamos?",
+        answers: [
+            { text: "<%! ... %>", correct: true, explanation: "A exclamação indica uma Declaração, criando atributos ou métodos na classe do Servlet." },
+            { text: "<%= ... %>", correct: false, explanation: "Essa tag é uma Expressão, usada apenas para exibir valores no HTML." },
+            { text: "<%-- ... --%>", correct: false, explanation: "Essa tag é usada para comentários que não aparecem no HTML final." }
+        ]
+    },
+    {
+        question: "O escopo 'Session' (Sessão) mantém os dados salvos por quanto tempo?",
+        answers: [
+            { text: "Apenas durante uma única requisição.", correct: false, explanation: "Este seria o escopo Request." },
+            { text: "Enquanto o navegador do usuário estiver aberto.", correct: true, explanation: "A sessão persiste enquanto durar a interação do usuário com o servidor naquela janela/aba." },
+            { text: "Até que o servidor seja reiniciado para todos os usuários.", correct: false, explanation: "Este seria o escopo Application." }
+        ]
+    }
+];
+
+let currentQuestion = 0;
+let score = 0;
+
+const questionEl = document.getElementById("question");
+const answersEl = document.getElementById("answers");
+const nextBtn = document.getElementById("nextBtn");
+const quizDiv = document.getElementById("quiz");
+const resultDiv = document.getElementById("result-container");
+const scoreEl = document.getElementById("score");
+
+function showQuestion() {
+    resetState();
+    let q = questions[currentQuestion];
+    questionEl.innerText = `${currentQuestion + 1}. ${q.question}`;
+
+    q.answers.forEach(answer => {
+        const btn = document.createElement("button");
+        btn.innerText = answer.text;
+        btn.onclick = () => selectAnswer(btn, answer);
+        answersEl.appendChild(btn);
+    });
+}
+
+function resetState() {
+    nextBtn.classList.add("hidden");
+    answersEl.innerHTML = "";
+}
+
+function selectAnswer(button, answer) {
+    const feedback = document.createElement("p");
+    feedback.style.marginTop = "10px";
+    feedback.style.fontSize = "0.9rem";
+    feedback.style.padding = "10px";
+    feedback.style.borderRadius = "5px";
+    feedback.style.backgroundColor = "#1e293b";
+
+    if (answer.correct) {
+        button.classList.add("correct");
+        score++;
+        feedback.innerHTML = `<strong>Correto!</strong> ${answer.explanation}`;
+        feedback.style.color = "#22c55e";
+    } else {
+        button.classList.add("wrong");
+        feedback.innerHTML = `<strong>Incorreto.</strong> ${answer.explanation}`;
+        feedback.style.color = "#ef4444";
+        
+        // Mostrar a correta
+        Array.from(answersEl.children).forEach(btn => {
+            const correctOption = questions[currentQuestion].answers.find(a => a.text === btn.innerText && a.correct);
+            if (correctOption) btn.classList.add("correct");
+        });
+    }
+
+    answersEl.appendChild(feedback);
+    Array.from(answersEl.children).forEach(btn => { if(btn.tagName === "BUTTON") btn.disabled = true; });
+    nextBtn.classList.remove("hidden");
+}
+
+nextBtn.onclick = () => {
+    currentQuestion++;
+    if (currentQuestion < questions.length) {
+        showQuestion();
+    } else {
+        showScore();
+    }
+};
+
+function showScore() {
+    quizDiv.classList.add("hidden");
+    resultDiv.classList.remove("hidden");
+    scoreEl.innerText = `Você acertou ${score} de ${questions.length}!`;
+}
+
+showQuestion();
             { text: "destroy()", correct: false }
         ]
     },
