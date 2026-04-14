@@ -1,32 +1,68 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
 body {
-    font-family: Arial, sans-serif;
-    background: #121212;
-    color: white;
-    text-align: center;
+    font-family: 'Segoe UI', sans-serif;
+    background: #0f172a;
+    color: #f8fafc;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 15px;
 }
 
 .container {
-    margin-top: 50px;
+    width: 100%;
+    max-width: 450px; /* Limita a largura no PC, mas flui no celular */
+    background: #1e293b;
+    padding: 25px;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    text-align: center;
+}
+
+h1 { color: #38bdf8; margin-bottom: 8px; }
+p { font-size: 0.9rem; opacity: 0.7; margin-bottom: 24px; }
+
+h2 {
+    font-size: 1.15rem;
+    margin-bottom: 20px;
+    line-height: 1.5;
+}
+
+.answer-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
 }
 
 button {
-    display: block;
-    margin: 10px auto;
-    padding: 10px;
-    width: 200px;
+    width: 100%;
+    padding: 16px;
+    font-size: 1rem;
     border: none;
+    border-radius: 10px;
     cursor: pointer;
-    border-radius: 5px;
+    background: #334155;
+    color: white;
+    transition: transform 0.1s, background 0.2s;
 }
 
-.correct {
-    background-color: green;
+button:active { transform: scale(0.98); }
+
+.correct { background-color: #22c55e !important; }
+.wrong { background-color: #ef4444 !important; }
+
+#nextBtn {
+    margin-top: 24px;
+    background-color: #38bdf8;
+    color: #0f172a;
+    font-weight: bold;
 }
 
-.wrong {
-    background-color: red;
-}
-
-.hidden {
-    display: none;
-}
+.retry-btn { margin-top: 20px; background: #64748b; }
+.hidden { display: none; }
